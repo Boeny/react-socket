@@ -16,9 +16,13 @@ module.exports = {
       },
     ]
   },
+  
+  devtool: 'source-map',
+  
   resolve: {
     extensions: ['.json', '.js', '.jsx']
   },
+  
   output: {
     path: __dirname + '/dist',
     publicPath: '/',
