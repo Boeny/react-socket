@@ -18,14 +18,10 @@ const random = (min, max, round) => {
 };
 
 io.on('connection', (socket) => {
-  var index = 0;
-  
   setInterval(() => {
     let date = new Date();
     
     socket.emit('state', {
-      index: index,
-      
       theme_id : random(1,10,true), 
       user_id : random(1,10,true), 
       project_name : projects[random(1,10,true)],
@@ -33,11 +29,9 @@ io.on('connection', (socket) => {
       user_country: 'Russia',
       user_gender: ['m','f'][random(0,1,true)],
       user_age: random(18, 45, true),
-      created : [date.getDay(),date.getMonth(),date.getFullYear()].join('.')
+      created : [date.getHours(),date.getMinutes(),date.getSeconds()].join(':')
     });
-    
-    index++;
-  }, 100);
+  }, config.timeout);
 });
 
 const port = config.port;

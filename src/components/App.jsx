@@ -1,63 +1,43 @@
 import React from 'react';
-import { Chart } from 'react-d3-core';
-import { LineChart } from 'react-d3-basic';
-const parseDate = require('d3').timeParse('%d.%m.%Y');
-
-var o = {
-  width: 700,
-  height: 300,
-  margins: {left: 100, right: 100, top: 50, bottom: 50},
-  title: "User sample",
-  // chart series,
-  // field: is what field your data want to be selected
-  // name: the name of the field that display in legend
-  // color: what color is the line
-  chartSeries: [{
-    field: 'index',
-    name: 'index',
-    color: '#ff7f0e'
-  }],
-  x: d => d.index// your x accessor
-};
+import { AreaChart, CartesianGrid, Area, Tooltip, XAxis, YAxis } from 'recharts';
+import { List } from 'immutable';
 
 export default class App extends React.Component
 {
   constructor(props){
     super(props);
-    this.state = {data: []};
+    this.data = [];
+    this.state = {data: List()};
   }
   
   componentDidMount(){
     this.props.onUpdate(el => {
-      el.created = parseDate(el.created);
-      
-      let newData = Array.from(this.state.data);
-      newData.push(el);
-      
+      let newData = this.state.data.push(el);
+      this.data = newData.toArray();
+      if (this.data.length > 50) newData = newData.shift();
       this.setState((prevState, props) => ({data: newData}));
     });
   }
   
   render(){
     return (
-      <Chart
-          title= {o.title}
-          width= {o.width}
-          height= {o.height}
-          margins= {o.margins}
-      >
-        <LineChart
-          showXGrid= {false}
-          showYGrid= {false}
-          margins= {o.margins}
-          title= {o.title}
-          data= {this.state.data}
-          width= {o.width}
-          height= {o.height}
-          chartSeries= {o.chartSeries}
-          x={o.x}
-        />
-      </Chart>
+      <AreaChart width={730} height={250} data={this.data} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
+        <defs>
+          <linearGradient id="colorUv" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="5%" stopColor="#8884d8" stopOpacity={0.8}/>
+            <stop offset="95%" stopColor="#8884d8" stopOpacity={0}/>
+          </linearGradient>
+          <linearGradient id="colorPv" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="5%" stopColor="#82ca9d" stopOpacity={0.8}/>
+            <stop offset="95%" stopColor="#82ca9d" stopOpacity={0}/>
+          </linearGradient>
+        </defs>
+        <XAxis dataKey="created" />
+        <YAxis />
+        <CartesianGrid strokeDasharray="3 3" />
+        <Tooltip />
+        <Area type="monotone" dataKey="amount" stroke="#8884d8" fillOpacity={1} fill="url(#colorUv)" />
+      </AreaChart>
     );
   }
 }
