@@ -1,15 +1,13 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './components/App';
-require('./style.css');
+import provider from './dataProvider';
 
-function getData(callback){
-  io().on('state', callback);
-}
+require('./style.css');
 
 global.onload = () => {
   ReactDOM.render(
-    <App onUpdate={getData} />,
+    <App onUpdate={provider.default} />,
     document.getElementById('app')
   );
 };

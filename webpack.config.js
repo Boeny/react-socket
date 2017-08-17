@@ -1,7 +1,10 @@
+const Uglify = require('uglifyjs-webpack-plugin');
+
 module.exports = {
   entry: [
     './src/index.jsx'
   ],
+  
   module: {
     loaders: [
       {
@@ -11,13 +14,16 @@ module.exports = {
       },
       {
         test: /\.css$/,
-        exclude: /node_modules/,
+        exclude: [/node_modules/],
         loader: 'style-loader!css-loader!postcss-loader',
       },
     ]
   },
   
-  watch: true,
+  plugins: [
+    new Uglify()
+  ],
+  
   devtool: 'source-map',
   
   resolve: {
